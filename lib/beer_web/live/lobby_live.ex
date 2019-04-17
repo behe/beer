@@ -1,6 +1,6 @@
 defmodule BeerWeb.LobbyLive do
   use Phoenix.LiveView
-  alias Beer.{Game, Games}
+  alias Beer.Games
 
   def render(%{view: "lobby"} = assigns) do
     ~L"""

@@ -16,13 +16,4 @@ defmodule BeerWeb.Router do
     get "/game", GameController, :index
     get "/game/:game/role/:role", GameController, :show
   end
-
-  # pipeline :api do
-  #   plug :accepts, ["json"]
-  # end
-  #
-  # Other scopes may use custom stacks.
-  # scope "/api", BeerWeb do
-  #   pipe_through :api
-  # end
 end
