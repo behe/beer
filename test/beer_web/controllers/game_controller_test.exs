@@ -1,10 +1,6 @@
 defmodule BeerWeb.GameControllerTest do
   use BeerWeb.ConnCase
 
-  setup do
-    Agent.update(Beer.GameRepo, fn _ -> [] end)
-  end
-
   describe "no games" do
     test "GET /game", %{conn: conn} do
       conn = get(conn, "/game")
@@ -15,6 +11,10 @@ defmodule BeerWeb.GameControllerTest do
   describe "existing game" do
     setup do
       Beer.Games.create("existing")
+
+      on_exit(fn ->
+        Agent.update(Beer.GameRepo, fn _ -> [] end)
+      end)
     end
 
     test "GET /game", %{conn: conn} do
