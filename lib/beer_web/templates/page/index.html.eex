@@ -1,6 +1,0 @@
-<section class="phx-hero">
-  <h1>Beer Game</h1>
-  <p>The objective is to minimize the <i>total cost for everyone</i> in the supply chain by maintaining low stocks but managing to deliver all orders..</p>
-</section>
-
-<%= live_render @conn, BeerWeb.LobbyLive %>
