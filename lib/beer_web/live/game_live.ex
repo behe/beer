@@ -9,7 +9,8 @@ defmodule BeerWeb.GameLive do
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
     <div>Received delivery: </div>
-    <div>Incoming order: </div>
+    <div>Received order: </div>
+    <div>Sent delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
     <div>Waiting for players…</div>
@@ -23,8 +24,8 @@ defmodule BeerWeb.GameLive do
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
     <div>Received delivery: </div>
-    <div>Incoming order: </div>
-    <div>Outgoing delivery: </div>
+    <div>Received order: </div>
+    <div>Sent delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
     <button phx-click="receive_delivery">Receive delivery</button>
@@ -38,11 +39,11 @@ defmodule BeerWeb.GameLive do
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
     <div>Received delivery: <%= @player.latest_received_delivery %></div>
-    <div>Incoming order: </div>
-    <div>Outgoing delivery: </div>
+    <div>Received order: </div>
+    <div>Sent delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
-    <button phx-click="receive_order">Receive incoming order</button>
+    <button phx-click="receive_order">Receive order</button>
     """
   end
 
@@ -53,11 +54,11 @@ defmodule BeerWeb.GameLive do
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
     <div>Received delivery: <%= @player.latest_received_delivery %></div>
-    <div>Incoming order: <%= @player.latest_received_order %></div>
-    <div>Outgoing delivery: </div>
+    <div>Received order: <%= @player.latest_received_order %></div>
+    <div>Sent delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
-    <button phx-click="send_delivery">Fulfill order</button>
+    <button phx-click="send_delivery">Send delivery</button>
     """
   end
 
@@ -68,13 +69,13 @@ defmodule BeerWeb.GameLive do
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
     <div>Received delivery: <%= @player.latest_received_delivery %></div>
-    <div>Incoming order: <%= @player.latest_received_order %></div>
-    <div>Outgoing delivery: <%= @player.latest_sent_delivery %></div>
+    <div>Received order: <%= @player.latest_received_order %></div>
+    <div>Sent delivery: <%= @player.latest_sent_delivery %></div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
     <form phx-submit="order">
       <input name="units" type="text" placeholder="Units of beer to order">
-      <button type="submit">Place order</button>
+      <button type="submit">Send order</button>
     </form>
     """
   end
