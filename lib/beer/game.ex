@@ -21,10 +21,6 @@ defmodule Beer.Game do
     end
   end
 
-  def order(game, role, units) do
-    %{game | players: Map.update!(game.players, role, &Player.order(&1, units))}
-  end
-
   def receive_delivery(game, role) do
     %{game | players: Map.update!(game.players, role, &Player.receive_delivery/1)}
   end
@@ -56,5 +52,9 @@ defmodule Beer.Game do
     players = Map.update!(players, "retailer", &Player.add_to_shipping_delay(&1, delivery))
 
     %{game | players: players}
+  end
+
+  def order(game, role, units) do
+    %{game | players: Map.update!(game.players, role, &Player.order(&1, units))}
   end
 end
