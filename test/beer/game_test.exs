@@ -13,9 +13,9 @@ defmodule Beee.GameTest do
              players: %{
                "retailer" => %Player{
                  backlog: 0,
-                 latest_delivery: 0,
-                 latest_fulfilled_order: 0,
-                 latest_order: 0,
+                 latest_received_delivery: 0,
+                 latest_sent_delivery: 0,
+                 latest_received_order: 0,
                  orders: [4, 4],
                  shipping_delay: [4, 4],
                  state: "new",
@@ -33,9 +33,9 @@ defmodule Beee.GameTest do
       players: %{
         "retailer" => %Player{
           backlog: 0,
-          latest_delivery: 0,
-          latest_fulfilled_order: 0,
-          latest_order: 0,
+          latest_received_delivery: 0,
+          latest_sent_delivery: 0,
+          latest_received_order: 0,
           orders: [4, 4],
           shipping_delay: [4, 4],
           state: "new",
@@ -55,9 +55,9 @@ defmodule Beee.GameTest do
       players: %{
         "retailer" => %Player{
           backlog: 0,
-          latest_delivery: 0,
-          latest_fulfilled_order: 0,
-          latest_order: 0,
+          latest_received_delivery: 0,
+          latest_sent_delivery: 0,
+          latest_received_order: 0,
           orders: [4, 4],
           shipping_delay: [4, 4],
           state: "new",
@@ -73,9 +73,9 @@ defmodule Beee.GameTest do
              players: %{
                "retailer" => %Player{
                  backlog: 0,
-                 latest_delivery: 0,
-                 latest_fulfilled_order: 0,
-                 latest_order: 0,
+                 latest_received_delivery: 0,
+                 latest_sent_delivery: 0,
+                 latest_received_order: 0,
                  orders: [4, 4],
                  shipping_delay: [4, 4],
                  state: "ready",
@@ -84,9 +84,9 @@ defmodule Beee.GameTest do
                },
                "manufacturer" => %Player{
                  backlog: 0,
-                 latest_delivery: 0,
-                 latest_fulfilled_order: 0,
-                 latest_order: 0,
+                 latest_received_delivery: 0,
+                 latest_sent_delivery: 0,
+                 latest_received_order: 0,
                  orders: [4, 4],
                  shipping_delay: [4, 4],
                  state: "ready",
@@ -106,9 +106,9 @@ defmodule Beee.GameTest do
          players: %{
            "retailer" => %Player{
              backlog: 0,
-             latest_delivery: 0,
-             latest_fulfilled_order: 0,
-             latest_order: 0,
+             latest_received_delivery: 0,
+             latest_sent_delivery: 0,
+             latest_received_order: 0,
              orders: [4, 4],
              shipping_delay: [4, 4],
              state: "ready",
@@ -117,9 +117,9 @@ defmodule Beee.GameTest do
            },
            "manufacturer" => %Player{
              backlog: 0,
-             latest_delivery: 0,
-             latest_fulfilled_order: 0,
-             latest_order: 0,
+             latest_received_delivery: 0,
+             latest_sent_delivery: 0,
+             latest_received_order: 0,
              orders: [4, 4],
              shipping_delay: [4, 4],
              state: "ready",
@@ -133,9 +133,9 @@ defmodule Beee.GameTest do
     test "receive delivery", %{game: game} do
       retailer = %Player{
         game.players["retailer"]
-        | latest_delivery: 4,
+        | latest_received_delivery: 4,
           shipping_delay: [4],
-          state: "delivered",
+          state: "received_delivery",
           stock: 16
       }
 
@@ -149,11 +149,11 @@ defmodule Beee.GameTest do
       retailer = %Player{
         game.players["retailer"]
         | backlog: 4,
-          latest_order: 4,
-          state: "incoming_order"
+          latest_received_order: 4,
+          state: "received_order"
       }
 
-      assert Game.receive_incoming_order(game, "retailer") == %Game{
+      assert Game.receive_order(game, "retailer") == %Game{
                game
                | players: %{game.players | "retailer" => retailer}
              }
@@ -163,37 +163,37 @@ defmodule Beee.GameTest do
       manufacturer = %Player{
         game.players["manufacturer"]
         | backlog: 4,
-          latest_order: 4,
-          state: "incoming_order"
+          latest_received_order: 4,
+          state: "received_order"
       }
 
       retailer = %Player{game.players["retailer"] | orders: [4]}
 
-      assert Game.receive_incoming_order(game, "manufacturer") == %Game{
+      assert Game.receive_order(game, "manufacturer") == %Game{
                game
                | players: %{"retailer" => retailer, "manufacturer" => manufacturer}
              }
     end
 
-    test "fulfill order as a retailer", %{game: game} do
+    test "send delivery as a retailer", %{game: game} do
       retailer = %Player{game.players["retailer"] | backlog: 16}
       game = %Game{game | players: %{game.players | "retailer" => retailer}}
 
       retailer = %Player{
         retailer
-        | latest_fulfilled_order: 12,
+        | latest_sent_delivery: 12,
           backlog: 4,
           stock: 0,
-          state: "fulfill_order"
+          state: "sent_delivery"
       }
 
-      assert Game.fulfill_order(game, "retailer") == %Game{
+      assert Game.send_delivery(game, "retailer") == %Game{
                game
                | players: %{game.players | "retailer" => retailer}
              }
     end
 
-    test "fulfill order as a manufacturer", %{game: game} do
+    test "send delivery as a manufacturer", %{game: game} do
       manufacturer = %Player{game.players["manufacturer"] | backlog: 8}
       game = %Game{game | players: %{game.players | "manufacturer" => manufacturer}}
 
@@ -201,13 +201,13 @@ defmodule Beee.GameTest do
 
       manufacturer = %Player{
         manufacturer
-        | latest_fulfilled_order: 8,
+        | latest_sent_delivery: 8,
           backlog: 0,
           stock: 4,
-          state: "fulfill_order"
+          state: "sent_delivery"
       }
 
-      assert Game.fulfill_order(game, "manufacturer") == %Game{
+      assert Game.send_delivery(game, "manufacturer") == %Game{
                game
                | players: %{"retailer" => retailer, "manufacturer" => manufacturer}
              }
@@ -216,7 +216,7 @@ defmodule Beee.GameTest do
     test "order", %{game: game} do
       retailer = %Player{game.players["retailer"] | state: "ready", orders: [8, 4, 4]}
 
-      assert Game.order(game, "retailer", 8) == %Game{
+      assert Game.send_order(game, "retailer", 8) == %Game{
                game
                | players: %{game.players | "retailer" => retailer}
              }

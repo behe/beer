@@ -55,12 +55,12 @@ defmodule BeerWeb.GameLiveTest do
     end
 
     test "receive incoming order", %{view: view} do
-      render_click(view, "receive_incoming_order")
+      render_click(view, "receive_order")
       assert render(view) =~ "Fulfill order"
     end
 
-    test "fulfill order", %{view: view} do
-      render_click(view, "fulfill_order")
+    test "send delivery", %{view: view} do
+      render_click(view, "send_delivery")
       assert render(view) =~ "Place order"
     end
 

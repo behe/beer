@@ -13,20 +13,20 @@ defmodule Beer.Games do
 
   def join(name, role), do: update(name, &Game.join(&1, role))
 
-  def order(game, player, units) do
-    update(game.name, &Game.order(&1, player.role, units))
+  def send_order(game, player, units) do
+    update(game.name, &Game.send_order(&1, player.role, units))
   end
 
   def receive_delivery(game, player) do
     update(game.name, &Game.receive_delivery(&1, player.role))
   end
 
-  def receive_incoming_order(game, player) do
-    update(game.name, &Game.receive_incoming_order(&1, player.role))
+  def receive_order(game, player) do
+    update(game.name, &Game.receive_order(&1, player.role))
   end
 
-  def fulfill_order(game, player) do
-    update(game.name, &Game.fulfill_order(&1, player.role))
+  def send_delivery(game, player) do
+    update(game.name, &Game.send_delivery(&1, player.role))
   end
 
   def subscribe do

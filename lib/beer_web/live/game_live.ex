@@ -31,45 +31,45 @@ defmodule BeerWeb.GameLive do
     """
   end
 
-  def render(%{player: %Player{state: "delivered"}} = assigns) do
+  def render(%{player: %Player{state: "received_delivery"}} = assigns) do
     ~L"""
     <h1><%= @game.name %></h1>
     <h2><%= @player.role %></h2>
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
-    <div>Received delivery: <%= @player.latest_delivery %></div>
+    <div>Received delivery: <%= @player.latest_received_delivery %></div>
     <div>Incoming order: </div>
     <div>Outgoing delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
-    <button phx-click="receive_incoming_order">Receive incoming order</button>
+    <button phx-click="receive_order">Receive incoming order</button>
     """
   end
 
-  def render(%{player: %Player{state: "incoming_order"}} = assigns) do
+  def render(%{player: %Player{state: "received_order"}} = assigns) do
     ~L"""
     <h1><%= @game.name %></h1>
     <h2><%= @player.role %></h2>
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
-    <div>Received delivery: <%= @player.latest_delivery %></div>
-    <div>Incoming order: <%= @player.latest_order %></div>
+    <div>Received delivery: <%= @player.latest_received_delivery %></div>
+    <div>Incoming order: <%= @player.latest_received_order %></div>
     <div>Outgoing delivery: </div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
-    <button phx-click="fulfill_order">Fulfill order</button>
+    <button phx-click="send_delivery">Fulfill order</button>
     """
   end
 
-  def render(%{player: %Player{state: "fulfill_order"}} = assigns) do
+  def render(%{player: %Player{state: "send_delivery"}} = assigns) do
     ~L"""
     <h1><%= @game.name %></h1>
     <h2><%= @player.role %></h2>
     <h3>Round: <%= @game.round %>/50</h3>
     <p><%= inspect(@player) %></p>
-    <div>Received delivery: <%= @player.latest_delivery %></div>
-    <div>Incoming order: <%= @player.latest_order %></div>
-    <div>Outgoing delivery: <%= @player.latest_fulfilled_order %></div>
+    <div>Received delivery: <%= @player.latest_received_delivery %></div>
+    <div>Incoming order: <%= @player.latest_received_order %></div>
+    <div>Outgoing delivery: <%= @player.latest_sent_delivery %></div>
     <div>Stock: <%= @player.stock %></div>
     <div>Backlog: <%= @player.backlog %></div>
     <form phx-submit="order">
@@ -129,20 +129,20 @@ defmodule BeerWeb.GameLive do
     {:noreply, socket}
   end
 
-  def handle_event("receive_incoming_order", _, socket) do
+  def handle_event("receive_order", _, socket) do
     %{assigns: %{game: game, player: player}} = socket
 
-    Games.receive_incoming_order(game, player)
+    Games.receive_order(game, player)
 
     # <li>See arrival of incoming order</li>
 
     {:noreply, socket}
   end
 
-  def handle_event("fulfill_order", _, socket) do
+  def handle_event("send_delivery", _, socket) do
     %{assigns: %{game: game, player: player}} = socket
 
-    Games.fulfill_order(game, player)
+    Games.send_delivery(game, player)
 
     # <li>See departure of upstream order</li>
     # <li>See update of stock and backlog</li>
@@ -152,7 +152,7 @@ defmodule BeerWeb.GameLive do
 
   def handle_event("order", %{"units" => units}, socket) do
     %{assigns: %{game: game, player: player}} = socket
-    Games.order(game, player, String.to_integer(units))
+    Games.send_order(game, player, String.to_integer(units))
 
     {:noreply, socket}
   end
