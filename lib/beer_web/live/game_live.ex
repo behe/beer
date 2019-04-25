@@ -62,7 +62,7 @@ defmodule BeerWeb.GameLive do
     """
   end
 
-  def render(%{player: %Player{state: "send_delivery"}} = assigns) do
+  def render(%{player: %Player{state: "sent_delivery"}} = assigns) do
     ~L"""
     <h1><%= @game.name %></h1>
     <h2><%= @player.role %></h2>
