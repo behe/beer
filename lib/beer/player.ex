@@ -29,6 +29,11 @@ defmodule Beer.Player do
     }
   end
 
+  def pop_order(player) do
+    {latest_order, orders} = List.pop_at(player.orders, -1)
+    {latest_order, %{player | orders: orders}}
+  end
+
   def receive_order(player, latest_received_order) do
     %{
       player

@@ -30,15 +30,9 @@ defmodule Beer.Game do
   end
 
   def receive_order(game, "manufacturer" = role) do
-    {latest_order, players} =
-      Map.get_and_update(game.players, "retailer", fn player ->
-        {latest_order, orders} = List.pop_at(player.orders, -1)
-        {latest_order, %{player | orders: orders}}
-      end)
+    {order, players} = Map.get_and_update(game.players, "retailer", &Player.pop_order/1)
 
-    players = Map.update!(players, role, &Player.receive_order(&1, latest_order))
-
-    %{game | players: players}
+    %{game | players: Map.update!(players, role, &Player.receive_order(&1, order))}
   end
 
   def send_delivery(game, "retailer" = role) do
