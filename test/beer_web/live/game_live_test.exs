@@ -1,5 +1,5 @@
 defmodule BeerWeb.GameLiveTest do
-  use ExUnit.Case
+  use BeerWeb.ConnCase
   import Phoenix.LiveViewTest
 
   setup do
@@ -11,23 +11,14 @@ defmodule BeerWeb.GameLiveTest do
     end)
   end
 
-  test "Disconnected render" do
-    {:ok, _view, html} =
-      mount_disconnected(BeerWeb.Endpoint, BeerWeb.GameLive,
-        session: %{name: "existing", role: "retailer"}
-      )
-
-    assert html =~ "Waiting for players…"
+  test "Disconnected render", %{conn: conn} do
+    conn = get(conn, "/game/existing/role/retailer")
+    assert html_response(conn, 200) =~ "Waiting for players…"
   end
 
   describe "gameplay" do
-    setup do
-      name = "existing"
-      role = "manufacturer"
-      Beer.Games.join(name, role)
-
-      {:ok, view, _html} =
-        mount(BeerWeb.Endpoint, BeerWeb.GameLive, session: %{name: name, role: role})
+    setup %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/game/existing/role/manufacturer")
 
       %{view: view}
     end
